@@ -3,8 +3,9 @@ fn get_version() -> u16 {
 }
 
 fn usage() {
+    let the_version = get_version();
     println!("tinymd, a markdown compiler written by Hiroyuki Saito");
-    println!("Version {}", get_version());
+    println!("Version {}", the_version);
 }
 
 fn main() {
