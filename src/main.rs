@@ -1,6 +1,15 @@
+use std::path::Path;
+use std::fs::File;
+
 fn parse_markdown_file(_filename: &str) {
     print_short_banner();
     println!("[ INFO ] Trying to parse {}...", _filename);
+
+    // Create a path variable from the filename.
+    let input_filename = Path::new(_filename);
+
+    // Try to open the file.
+    let file = File::open(&input_filename).expect("[ ERROR ] Failed to open file!");
 }
 
 fn print_short_banner() {
