@@ -1,23 +1,21 @@
-fn parse_markdown_file() {}
+fn parse_markdown_file(_filename: &str) {
+    print_short_banner();
+    println!("[ INFO ] Trying to parse {}...", _filename);
+}
 
 fn print_short_banner() {
     println!("{}", get_title());
 }
 
-// print_short_banner()
-// "Written by: " + env!("CARGO_PKG_AUTHORS")
-// "Homepage: " + env!("CARGO_PKG_HOMEPAGE")
-// "Usage: tinymd <somefile>.md"
 fn print_long_banner() {
     print_short_banner();
     println!(
-        "Written by: {}¥nHomepage: {}¥nUsage: tinymd <somefile>.md",
+        "Written by: {}\nHomepage: {}\nUsage: tinymd <somefile>.md",
         env!("CARGO_PKG_AUTHORS"),
         env!("CARGO_PKG_HOMEPAGE")
     );
 }
 
-// [TITLE] (v[VERSION]), [DESCRIPTION]
 fn get_title() -> String {
     let mut the_title = String::from(env!("CARGO_PKG_NAME"));
     the_title.push_str(" (v");
@@ -27,8 +25,15 @@ fn get_title() -> String {
     the_title
 }
 
-fn usage() {}
+fn usage() {
+    println!("[ ERROR ] Confusing invocation. See usage below.");
+    print_long_banner();
+}
 
 fn main() {
-    usage();
+    let args: Vec<String> = std::env::args().collect();
+    match args.len() {
+        2 => parse_markdown_file(&args[1]),
+        _ => usage(),
+    }
 }
