@@ -1,5 +1,6 @@
 use std::path::Path;
 use std::fs::File;
+use std::io::{BufRead, BufReader};
 
 fn parse_markdown_file(_filename: &str) {
     print_short_banner();
@@ -10,6 +11,54 @@ fn parse_markdown_file(_filename: &str) {
 
     // Try to open the file.
     let file = File::open(&input_filename).expect("[ ERROR ] Failed to open file!");
+
+    let mut _ptag: bool = false;
+    let mut _htag: bool = false;
+
+    // Create a place to store all our tokens
+    let mut tokens: Vec<String> = Vec::new();
+
+    // Read the file line-by-line
+    let reader = BufReader::new(file);
+
+    for line in reader.lines() {
+        let line_contents = line.unwrap();
+        let first_char: Vec<char> = line_contents.chars().take(1).collect();
+        let mut output_line = String::new();
+        match first_char.pop() {
+            Some("#") => {
+                if _ptag {
+                    _ptag = false;
+                    output_line.push_str("</p>\n");
+                }
+                if _htag {
+                    _htag = false;
+                    output_line.push_str("</h1>\n")
+                }
+                _htag = true;
+                output_line.push_str("\n<h1>");
+                output_line.push_str(&line_contents[2..]);
+            },
+            _ => {
+                if !_ptag {
+                    _ptag = true;
+                    output_line.push_str("\n<p>");
+                }
+                output_line.push_str(&line_contents);
+            },
+        };
+        if _ptag {
+            _ptag = false;
+            output_line.push_str("</p>\n");
+        }
+        if _htag {
+            _htag = false;
+            output_line.push_str("</h1>\n")
+        }
+        if output_line != "<p></p>\n" {
+            tokens.push(output_line);
+        }
+    }
 }
 
 fn print_short_banner() {
