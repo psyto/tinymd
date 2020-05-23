@@ -40,13 +40,13 @@ fn parse_markdown_file(_filename: &str) {
                     output_line.push_str("</h1>\n")
                 }
                 _htag = true;
-                output_line.push_str("\n<h1>");
+                output_line.push_str("<h1>");
                 output_line.push_str(&line_contents[2..]);
             }
             _ => {
                 if !_ptag {
                     _ptag = true;
-                    output_line.push_str("\n<p>");
+                    output_line.push_str("<p>");
                 }
                 output_line.push_str(&line_contents);
             }
@@ -67,9 +67,9 @@ fn parse_markdown_file(_filename: &str) {
         }
     }
 
-    //    for token in &tokens {
-    //        println!("{}", token);
-    //    }
+//    for token in &tokens {
+//        println!("{}", token);
+//    }
 
     let mut output_filename = String::from(&_filename[.._filename.len() - 3]);
     output_filename.push_str(".html");
