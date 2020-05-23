@@ -1,6 +1,7 @@
-use std::path::Path;
 use std::fs::File;
+use std::io::Write;
 use std::io::{BufRead, BufReader};
+use std::path::Path;
 
 fn parse_markdown_file(_filename: &str) {
     print_short_banner();
@@ -23,8 +24,11 @@ fn parse_markdown_file(_filename: &str) {
 
     for line in reader.lines() {
         let line_contents = line.unwrap();
+
         let first_char: Vec<char> = line_contents.chars().take(1).collect();
+
         let mut output_line = String::new();
+
         match first_char.pop() {
             Some("#") => {
                 if _ptag {
@@ -38,27 +42,39 @@ fn parse_markdown_file(_filename: &str) {
                 _htag = true;
                 output_line.push_str("\n<h1>");
                 output_line.push_str(&line_contents[2..]);
-            },
+            }
             _ => {
                 if !_ptag {
                     _ptag = true;
                     output_line.push_str("\n<p>");
                 }
                 output_line.push_str(&line_contents);
-            },
+            }
         };
+
         if _ptag {
             _ptag = false;
             output_line.push_str("</p>\n");
         }
+
         if _htag {
             _htag = false;
             output_line.push_str("</h1>\n")
         }
+
         if output_line != "<p></p>\n" {
             tokens.push(output_line);
         }
     }
+
+    for token in &tokens {
+        println!("{}", token);
+    }
+
+    let mut output_filename = String::from(&_filename[.._filename.len() - 3]);
+    output_filename.push_str(".html");
+    let mut outfile =
+        File::create(output_filename).expect("[ ERROR ] Could not create output file!");
 }
 
 fn print_short_banner() {
