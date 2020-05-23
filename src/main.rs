@@ -25,12 +25,12 @@ fn parse_markdown_file(_filename: &str) {
     for line in reader.lines() {
         let line_contents = line.unwrap();
 
-        let first_char: Vec<char> = line_contents.chars().take(1).collect();
+        let mut first_char: Vec<char> = line_contents.chars().take(1).collect();
 
         let mut output_line = String::new();
 
         match first_char.pop() {
-            Some("#") => {
+            Some('#') => {
                 if _ptag {
                     _ptag = false;
                     output_line.push_str("</p>\n");
@@ -67,14 +67,23 @@ fn parse_markdown_file(_filename: &str) {
         }
     }
 
-    for token in &tokens {
-        println!("{}", token);
-    }
+    //    for token in &tokens {
+    //        println!("{}", token);
+    //    }
 
     let mut output_filename = String::from(&_filename[.._filename.len() - 3]);
     output_filename.push_str(".html");
+
     let mut outfile =
         File::create(output_filename).expect("[ ERROR ] Could not create output file!");
+
+    for line in &tokens {
+        outfile
+            .write_all(line.as_bytes())
+            .expect("[ ERROR ] Could not write to output file!");
+    }
+
+    println!("[ INFO ] Parsing complete!");
 }
 
 fn print_short_banner() {
